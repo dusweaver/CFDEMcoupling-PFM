@@ -25,29 +25,20 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Description
-    This code is designed to realize coupled CFD-DEM simulations using LIGGGHTS
-    and OpenFOAM(R). Note: this code is not part of OpenFOAM(R) (see DISCLAIMER).
-
-Reference
-    G. Wierink, C. Goniva, B. Niceno, K. Heiskanen,
-    "Mechanistic Modelling of Particle-Interface Interaction in Three-Phase Flows",
-    Proc. of the 8th Int. Conf. on CFD in Oil and Gas, Metallurgical and Process Industries,
-    Trondheim, 2011
+    Custom drag model for CFD-DEM simulations using LIGGGHTS and OpenFOAM.
 
 Class
-    interface
+    CustomDrag
 
 SourceFiles
-    interface.C
+    CustomDrag.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef interface_H
-#define interface_H
+#ifndef CustomDrag_H
+#define CustomDrag_H
 
 #include "forceModel.H"
-#include "interpolationCellPoint.H"
-// #include "vectorField.H"  // for per-cell vector storage
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -55,56 +46,30 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class interface Declaration
+                           Class CustomDrag Declaration
 \*---------------------------------------------------------------------------*/
 
-class interface
+class CustomDrag
 :
     public forceModel
 {
 private:
-    dictionary propsDict_;
+    dictionary propsDict_;               // Properties dictionary for the drag model
 
-    word VOFvoidfractionFieldName_;
+    const volVectorField& U_;            // Reference to the velocity field
 
-    const volScalarField& alpha_;    // ref to VOF voidfraction
-
-    word gradAlphaName_;
-
-    const volVectorField& gradAlpha_;    // ref to fvc::grad(VOF voidfraction)
-
-    const scalar sigma_;
-
-    const scalar theta_;
-
-    const scalar alphaThreshold_;
-
-    const scalar  deltaAlphaIn_;
-
-    const scalar  deltaAlphaOut_;
-
-    scalar C_; // model constant
-
-    bool interpolation_; // use interpolated field values (does not work for fine grids???)
-
-    autoPtr<interpolation<scalar> > alphaInterpolator_;
-
-    autoPtr<interpolation<vector> > gradAlphaInterpolator_;
-
-        // New members for optimized per-cell interface computation
-    mutable vectorField cellInterfaceVec_;  // precomputed interface vector per cell
-    scalar Fatt0_;                          // base capillary force factor (no dp)
+    mutable scalar scaleDia_;            // Scaling factor for particle diameter
+    mutable scalar scaleDrag_;           // Scaling factor for drag force
 
 public:
 
     //- Runtime type information
-    TypeName("interface");
-
+    TypeName("CustomDrag");
 
     // Constructors
 
         //- Construct from components
-        interface
+        CustomDrag
         (
             const dictionary& dict,
             cfdemCloud& sm
@@ -112,8 +77,7 @@ public:
 
     // Destructor
 
-        ~interface();
-
+        ~CustomDrag();
 
     // Member Functions
         void setForce() const;

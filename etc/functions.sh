@@ -583,19 +583,25 @@ parCFDDEMrun()
     debugMode="$8"
     reconstuctCase="$9"
     cleanCase="$10"
+
+    # NUMA configuration
+    numaNode="0"  # Define the NUMA node you want to bind to
+    numaOptions="numactl --cpunodebind=$numaNode --membind=$numaNode"
+    # OR taskset configuration if preferred:
+    # cpuRange="0-$(($nrProcs - 1))"
+    # tasksetOptions="taskset -c $cpuRange"
     #--------------------------------------------------------------------------------#
 
     if [ $debugMode == "on" ]; then
         debugMode="valgrind"
     elif [ $debugMode == "strict" ]; then
-        #debugMode="valgrind --leak-check=full -v --trace-children=yes --track-origins=yes" 
         debugMode="valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes"  
     else
         debugMode=""
     fi
 
     #- clean up old log file
-    rm $logpath/$logfileName
+    rm -f $logpath/$logfileName
 
     #- change path
     cd $casePath/CFD
@@ -624,15 +630,14 @@ parCFDDEMrun()
     echo 2>&1 | tee -a $logpath/$logfileName
 
     #- clean up case
-    rm couplingFiles/*
+    rm -f couplingFiles/*
 
-    #- run applictaion
+    #- run application with NUMA binding
     if [[ $machineFileName == "none" ]]; then
         mpirun -np $nrProcs $debugMode $solverName -parallel 2>&1 | tee -a $logpath/$logfileName
 
         #- reconstruct case
         if [[ $reconstuctCase == "true" ]]; then   
-            #pseudoParallelRun "reconstructPar" $nrProcs
             reconstructPar
         fi
     else
@@ -640,7 +645,6 @@ parCFDDEMrun()
 
         #- reconstruct case
         if [[ $reconstuctCase == "true" ]]; then   
-            #pseudoParallelRun "reconstructPar" $nrProcs
             reconstructPar
         fi
     fi
@@ -648,6 +652,95 @@ parCFDDEMrun()
     #- keep terminal open (if started in new terminal)
     #read
 }
+# parCFDDEMrun()
+# {
+#     #--------------------------------------------------------------------------------#
+#     #- define variables
+#     logpath="$1"
+#     logfileName="$2"
+#     casePath="$3"
+#     headerText="$4"
+#     solverName="$5"
+#     nrProcs="$6"
+#     machineFileName="$7"
+#     debugMode="$8"
+#     reconstuctCase="$9"
+#     cleanCase="${10}"
+#     numaNode="${11}"  # NUMA node number
+#     #--------------------------------------------------------------------------------#
+
+#     if [ "$debugMode" == "on" ]; then
+#         debugMode="valgrind"
+#     elif [ "$debugMode" == "strict" ]; then
+#         debugMode="valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes"  
+#     else
+#         debugMode=""
+#     fi
+
+#     #- Define CPU ranges for each NUMA node
+#     if [ "$numaNode" == "0" ]; then
+#         cpuList="0-7,16-23,32-39,48-55,64-71,80-87"
+#     elif [ "$numaNode" == "1" ]; then
+#         cpuList="8,9,10,11,12,13,14,15,24,25,26,27,28,29,30,31,40,41,42,43,44,45,46,47,56,57,58,59,60,61,62,63"
+#     else
+#         echo "Invalid NUMA node specified: $numaNode"
+#         exit 1
+#     fi
+
+#     #- clean up old log file
+#     rm -f $logpath/$logfileName
+
+#     #- change path
+#     cd $casePath/CFD
+
+#     #- remove old data
+#     rm -rf processor*
+
+#     #- decompose case
+#     decomposePar
+
+#     #- make proc dirs visible
+#     count=0
+#     for i in $(seq $nrProcs); do
+#         let count=$i-1
+#         (cd $casePath/CFD/processor$count && touch file.foam)
+#     done
+
+#     #- header
+#     echo 2>&1 | tee -a /$logpath/$logfileName
+#     echo "//   $headerText   //" 2>&1 | tee -a $logpath/$logfileName
+#     echo 2>&1 | tee -a $logpath/$logfileName
+
+#     #- write path
+#     pwd 2>&1 | tee -a $logpath/$logfileName
+#     echo 2>&1 | tee -a $logpath/$logfileName
+
+#     #- clean up case
+#     rm -f couplingFiles/*
+
+#     #- run application with NUMA binding
+#     if [[ $machineFileName == "none" ]]; then
+#         mpirun -np $nrProcs --report-bindings --map-by numa --bind-to core $debugMode $solverName -parallel 2>&1 | tee -a $logpath/$logfileName
+
+#         #- reconstruct case
+#         if [[ $reconstuctCase == "true" ]]; then   
+#             reconstructPar
+#         fi
+#     else
+#         mpirun -machinefile $machineFileName -np $nrProcs --report-bindings --map-by numa --bind-to core $debugMode $solverName -parallel 2>&1 | tee -a $logpath/$logfileName
+
+#         #- reconstruct case
+#         if [[ $reconstuctCase == "true" ]]; then   
+#             reconstructPar
+#         fi
+#     fi
+
+
+#     #- keep terminal open (if started in new terminal)
+#     #read
+# }
+
+
 #==================================#
 
 

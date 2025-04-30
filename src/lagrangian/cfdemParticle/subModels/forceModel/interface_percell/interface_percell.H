@@ -30,24 +30,24 @@ Description
 
 Reference
     G. Wierink, C. Goniva, B. Niceno, K. Heiskanen,
-    "Mechanistic Modelling of Particle-Interface Interaction in Three-Phase Flows",
+    "Mechanistic Modelling of Particle-interface_percell Interaction in Three-Phase Flows",
     Proc. of the 8th Int. Conf. on CFD in Oil and Gas, Metallurgical and Process Industries,
     Trondheim, 2011
 
 Class
-    interface
+    interface_percell
 
 SourceFiles
-    interface.C
+    interface_percell.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef interface_H
-#define interface_H
+#ifndef interface_percell_H
+#define interface_percell_H
 
 #include "forceModel.H"
 #include "interpolationCellPoint.H"
-// #include "vectorField.H"  // for per-cell vector storage
+#include "vectorField.H"  // for per-cell vector storage
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -55,10 +55,10 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class interface Declaration
+                           Class interface_percell Declaration
 \*---------------------------------------------------------------------------*/
 
-class interface
+class interface_percell
 :
     public forceModel
 {
@@ -91,20 +91,20 @@ private:
 
     autoPtr<interpolation<vector> > gradAlphaInterpolator_;
 
-        // New members for optimized per-cell interface computation
-    mutable vectorField cellInterfaceVec_;  // precomputed interface vector per cell
+        // New members for optimized per-cell interface_percell computation
+    mutable vectorField cellinterface_percellVec_;  // precomputed interface_percell vector per cell
     scalar Fatt0_;                          // base capillary force factor (no dp)
 
 public:
 
     //- Runtime type information
-    TypeName("interface");
+    TypeName("interface_percell");
 
 
     // Constructors
 
         //- Construct from components
-        interface
+        interface_percell
         (
             const dictionary& dict,
             cfdemCloud& sm
@@ -112,7 +112,7 @@ public:
 
     // Destructor
 
-        ~interface();
+        ~interface_percell();
 
 
     // Member Functions

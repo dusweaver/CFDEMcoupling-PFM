@@ -1,4 +1,4 @@
-/*---------------------------------------------------------------------------*\
+r/*---------------------------------------------------------------------------*\
 License
 
     This is free software: you can redistribute it and/or modify it
@@ -111,6 +111,35 @@ int main(int argc, char *argv[])
             mixture.solve();
             rho = mixture.rho();
             rhoEps = rho * voidfraction;
+
+                // Read maxVel and smallMag from system/fvSolution
+        const dictionary& fvSolutionDict = mesh.solutionDict();
+        const dictionary& limiterDict = fvSolutionDict.subDict("maxVelocityLimiter");
+
+        scalar maxVel = readScalar(limiterDict.lookup("maxVel"));
+        scalar smallMag = readScalar(limiterDict.lookup("smallMag"));
+
+                Info << "Checking for exceeding maxVel " << maxVel << endl; 
+        // Loop through each cell in the velocity field and limit velocity if necessary
+        forAll(U, i)
+        {
+            scalar currentMag = mag(U[i]);
+            if (currentMag > maxVel)
+            {
+                Info << "Velocity in cell " << i << " exceeded maxVel (" << currentMag << " > " << maxVel 
+                     << "). Limiting to " << maxVel << " m/s." << endl;
+
+                if (currentMag > smallMag)
+                {
+                    U[i] = maxVel * (U[i] / currentMag);  // Scale velocity to maxVel
+                }
+                
+                else
+                {
+                    U[i] = vector(maxVel, 0, 0);  // Default direction if velocity is very small
+                }
+            }
+        }
 
              // --- Pressure-velocity PIMPLE corrector loop
             while (pimple.loop())

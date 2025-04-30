@@ -25,15 +25,16 @@ export CFDEM_VERSION=24.01
 # Please set to the appropriate path if the default is not correct.
 #
 # activate compatible OpenFOAM version
-. $HOME/OpenFOAM/OpenFOAM-6/etc/bashrc
+conda activate py2
+. $HOME/OpenFOAM/OpenFOAM-5.x/etc/bashrc
 #
 # CFDEMcoupling
 export CFDEM_INST_DIR=$HOME/$CFDEM_PROJECT
-export CFDEM_PROJECT_DIR=$CFDEM_INST_DIR/CFDEMcoupling
+export CFDEM_PROJECT_DIR=$CFDEM_INST_DIR/CFDEMcoupling-PFM-new
 export CFDEM_PROJECT_USER_DIR=$CFDEM_INST_DIR/$USER-$WM_PROJECT_VERSION
 #
 # LIGGGHTS
-export CFDEM_LIGGGHTS_INST_DIR=$CFDEM_INST_DIR/LIGGGHTS
+export CFDEM_LIGGGHTS_INST_DIR=$CFDEM_INST_DIR/LIGGGHTS-PFM
 #
 # LPP installation path
 export CFDEM_LPP_INST_DIR=$CFDEM_INST_DIR/LPP

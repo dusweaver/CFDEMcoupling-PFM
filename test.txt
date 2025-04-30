@@ -1,0 +1,59 @@
+
+*********************************************
+* C F D E M (R) c o u p l i n g             *
+*                                           *
+* by DCS Computing GmbH                     *
+* www.dcs-computing.com                     *
+*********************************************
+
+*********************************
+CFDEM(R)coupling system settings:
+*********************************
+CFDEM_VERSION=24.01
+couple to OF_VERSION=5.x
+compile option=Opt
+
+check if paths are set correctly
+valid:yes critical:yes - $CFDEM_PROJECT_DIR = /home/dustin/CFDEM/CFDEMcoupling-PFM-new
+valid:yes critical:no - $CFDEM_PROJECT_USER_DIR = /home/dustin/CFDEM/dustin-5.x
+valid:yes critical:yes - $CFDEM_SRC_DIR = /home/dustin/CFDEM/CFDEMcoupling-PFM-new/src
+valid:yes critical:yes - $CFDEM_SOLVER_DIR = /home/dustin/CFDEM/CFDEMcoupling-PFM-new/applications/solvers
+valid:yes critical:yes - $CFDEM_TUT_DIR = /home/dustin/CFDEM/CFDEMcoupling-PFM-new/tutorials
+valid:yes critical:yes - $CFDEM_LIGGGHTS_SRC_DIR = /home/dustin/CFDEM/LIGGGHTS-PFM/src
+valid:yes critical:yes - $CFDEM_LIGGGHTS_BIN_DIR = /home/dustin/CFDEM/LIGGGHTS-PFM/src-build
+valid:yes critical:yes - $CFDEM_LPP_DIR = /home/dustin/CFDEM/LPP/src
+valid:yes critical:yes - $CFDEM_ADD_LIBS_DIR = /home/dustin/CFDEM/CFDEMcoupling-PFM-new/etc
+valid:NO  critical:no - $CFDEM_TEST_HARNESS_PATH = /home/dustin/CFDEM/dustin-5.x/log/logFilesCFDEM-24.01-5.x does not exist
+
+library names
+$CFDEM_LIB_NAME = lagrangianCFDEM-24.01-5.x
+$PATH = /home/dustin/CFDEM/CFDEMcoupling-PFM-new/platforms/linux64GccDPInt32Opt/bin:/home/dustin/CFDEM/LIGGGHTS-PFM/src-build:/home/dustin/OpenFOAM/ThirdParty-5.x/platforms/linux64Gcc/gperftools-svn/bin:/home/dustin/OpenFOAM/dustin-5.x/platforms/linux64GccDPInt32Opt/bin:/home/dustin/OpenFOAM/site/5.x/platforms/linux64GccDPInt32Opt/bin:/home/dustin/OpenFOAM/OpenFOAM-5.x/platforms/linux64GccDPInt32Opt/bin:/home/dustin/OpenFOAM/OpenFOAM-5.x/bin:/home/dustin/OpenFOAM/OpenFOAM-5.x/wmake:/home/dustin/miniconda3/envs/py2/bin:/home/dustin/bin:/home/dustin/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+$LD_LIBRARY_PATH = /home/dustin/CFDEM/CFDEMcoupling-PFM-new/platforms/linux64GccDPInt32Opt/lib:/home/dustin/OpenFOAM/ThirdParty-5.x/platforms/linux64Gcc/gperftools-svn/lib:/home/dustin/OpenFOAM/OpenFOAM-5.x/platforms/linux64GccDPInt32Opt/lib/openmpi-system:/home/dustin/OpenFOAM/ThirdParty-5.x/platforms/linux64GccDPInt32/lib/openmpi-system:/usr/lib/x86_64-linux-gnu/openmpi/lib:/home/dustin/OpenFOAM/dustin-5.x/platforms/linux64GccDPInt32Opt/lib:/home/dustin/OpenFOAM/site/5.x/platforms/linux64GccDPInt32Opt/lib:/home/dustin/OpenFOAM/OpenFOAM-5.x/platforms/linux64GccDPInt32Opt/lib:/home/dustin/OpenFOAM/ThirdParty-5.x/platforms/linux64GccDPInt32/lib:/home/dustin/OpenFOAM/OpenFOAM-5.x/platforms/linux64GccDPInt32Opt/lib/dummy
+$WM_NCOMPPROCS = 
+*******************
+g++:
+/usr/bin/g++
+g++ (Ubuntu 8.4.0-3ubuntu2) 8.4.0
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+gcc:
+/usr/bin/gcc
+gcc (Ubuntu 8.4.0-3ubuntu2) 8.4.0
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+mpic++:
+/usr/bin/mpic++
+g++ (Ubuntu 8.4.0-3ubuntu2) 8.4.0
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+mpirun:
+/usr/bin/mpirun
+mpirun (Open MPI) 4.1.2
+
+Report bugs to http://www.open-mpi.org/community/help/

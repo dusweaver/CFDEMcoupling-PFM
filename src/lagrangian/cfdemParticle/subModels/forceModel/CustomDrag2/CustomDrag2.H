@@ -28,26 +28,21 @@ Description
     This code is designed to realize coupled CFD-DEM simulations using LIGGGHTS
     and OpenFOAM(R). Note: this code is not part of OpenFOAM(R) (see DISCLAIMER).
 
-Reference
-    G. Wierink, C. Goniva, B. Niceno, K. Heiskanen,
-    "Mechanistic Modelling of Particle-Interface Interaction in Three-Phase Flows",
-    Proc. of the 8th Int. Conf. on CFD in Oil and Gas, Metallurgical and Process Industries,
-    Trondheim, 2011
+    Schiller Naumann drag law
+    contribution from RQ
 
 Class
-    interface
+    CustomDrag2
 
 SourceFiles
-    interface.C
+    CustomDrag2.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef interface_H
-#define interface_H
+#ifndef CustomDrag2_H
+#define CustomDrag2_H
 
 #include "forceModel.H"
-#include "interpolationCellPoint.H"
-// #include "vectorField.H"  // for per-cell vector storage
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -55,56 +50,36 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class interface Declaration
+                           Class CustomDrag2 Declaration
 \*---------------------------------------------------------------------------*/
 
-class interface
+class CustomDrag2
 :
     public forceModel
 {
 private:
     dictionary propsDict_;
 
-    word VOFvoidfractionFieldName_;
+    const bool verbose_;
 
-    const volScalarField& alpha_;    // ref to VOF voidfraction
+    word velFieldName_;
 
-    word gradAlphaName_;
+    const volVectorField& U_;
 
-    const volVectorField& gradAlpha_;    // ref to fvc::grad(VOF voidfraction)
+    mutable scalar scaleDia_;
 
-    const scalar sigma_;
-
-    const scalar theta_;
-
-    const scalar alphaThreshold_;
-
-    const scalar  deltaAlphaIn_;
-
-    const scalar  deltaAlphaOut_;
-
-    scalar C_; // model constant
-
-    bool interpolation_; // use interpolated field values (does not work for fine grids???)
-
-    autoPtr<interpolation<scalar> > alphaInterpolator_;
-
-    autoPtr<interpolation<vector> > gradAlphaInterpolator_;
-
-        // New members for optimized per-cell interface computation
-    mutable vectorField cellInterfaceVec_;  // precomputed interface vector per cell
-    scalar Fatt0_;                          // base capillary force factor (no dp)
+    mutable scalar scaleDrag_;
 
 public:
 
     //- Runtime type information
-    TypeName("interface");
+    TypeName("CustomDrag2");
 
 
     // Constructors
 
         //- Construct from components
-        interface
+        CustomDrag2
         (
             const dictionary& dict,
             cfdemCloud& sm
@@ -112,7 +87,7 @@ public:
 
     // Destructor
 
-        ~interface();
+        ~CustomDrag2();
 
 
     // Member Functions

@@ -72,9 +72,12 @@ $(forceModels)/DiFeliceDrag/DiFeliceDrag.C
 $(forceModels)/fieldStore/fieldStore.C
 $(forceModels)/GidaspowDrag/GidaspowDrag.C
 $(forceModels)/SchillerNaumannDrag/SchillerNaumannDrag.C
+$(forceModels)/customDrag/customDrag.C
+$(forceModels)/CustomDrag2/CustomDrag2.C
 $(forceModels)/Archimedes/Archimedes.C
 $(forceModels)/ArchimedesIB/ArchimedesIB.C
 $(forceModels)/interface/interface.C
+$(forceModels)/interface_percell/interface_percell.C
 $(forceModels)/ShirgaonkarIB/ShirgaonkarIB.C
 $(forceModels)/KochHillDrag/KochHillDrag.C
 $(forceModels)/KochHillRWDrag/KochHillRWDrag.C
@@ -144,6 +147,7 @@ $(IOModels)/sophIO/sophIO.C
 $(voidFractionModels)/voidFractionModel/voidFractionModel.C
 $(voidFractionModels)/voidFractionModel/newVoidFractionModel.C
 $(voidFractionModels)/centreVoidFraction/centreVoidFraction.C
+$(voidFractionModels)/testVoidFraction/testVoidFraction.C
 $(voidFractionModels)/dividedVoidFraction/dividedVoidFraction.C
 $(voidFractionModels)/dividedVoidFractionMS/dividedVoidFractionMS.C
 $(voidFractionModels)/bigParticleVoidFraction/bigParticleVoidFraction.C

@@ -28,83 +28,68 @@ Description
     This code is designed to realize coupled CFD-DEM simulations using LIGGGHTS
     and OpenFOAM(R). Note: this code is not part of OpenFOAM(R) (see DISCLAIMER).
 
-Reference
-    G. Wierink, C. Goniva, B. Niceno, K. Heiskanen,
-    "Mechanistic Modelling of Particle-Interface Interaction in Three-Phase Flows",
-    Proc. of the 8th Int. Conf. on CFD in Oil and Gas, Metallurgical and Process Industries,
-    Trondheim, 2011
-
 Class
-    interface
+    UniformVoidFraction
 
 SourceFiles
-    interface.C
+    UniformVoidFraction.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef interface_H
-#define interface_H
+#ifndef UniformVoidFraction_H
+#define UniformVoidFraction_H
 
-#include "forceModel.H"
-#include "interpolationCellPoint.H"
-// #include "vectorField.H"  // for per-cell vector storage
+#include "voidFractionModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
+const int numberOfMarkerPoints = 29;
 
 /*---------------------------------------------------------------------------*\
-                           Class interface Declaration
+                           Class noDrag Declaration
 \*---------------------------------------------------------------------------*/
 
-class interface
+class UniformVoidFraction
 :
-    public forceModel
+    public voidFractionModel
 {
+
 private:
-    dictionary propsDict_;
+        dictionary propsDict_;
 
-    word VOFvoidfractionFieldName_;
+        bool verbose_;
 
-    const volScalarField& alpha_;    // ref to VOF voidfraction
+        Switch procBoundaryCorrection_;
 
-    word gradAlphaName_;
+        const scalar alphaMin_;          // min value of voidFraction
 
-    const volVectorField& gradAlpha_;    // ref to fvc::grad(VOF voidfraction)
+        mutable bool alphaLimited_;
 
-    const scalar sigma_;
+        mutable scalar tooMuch_;         // particle volume which is lost due to voidFraction limitation
 
-    const scalar theta_;
+        bool interpolation_;
 
-    const scalar alphaThreshold_;
+        bool cfdemUseOnly_;
 
-    const scalar  deltaAlphaIn_;
+        virtual inline scalar Vp(int index, scalar radius, scalar scaleVol) const
+        {
+            return 4.188790205*radius*radius*radius*scaleVol; //4/3*pi=4.188790205
+        };
 
-    const scalar  deltaAlphaOut_;
-
-    scalar C_; // model constant
-
-    bool interpolation_; // use interpolated field values (does not work for fine grids???)
-
-    autoPtr<interpolation<scalar> > alphaInterpolator_;
-
-    autoPtr<interpolation<vector> > gradAlphaInterpolator_;
-
-        // New members for optimized per-cell interface computation
-    mutable vectorField cellInterfaceVec_;  // precomputed interface vector per cell
-    scalar Fatt0_;                          // base capillary force factor (no dp)
+        vector offsets[numberOfMarkerPoints];
 
 public:
 
     //- Runtime type information
-    TypeName("interface");
+    TypeName("Uniform");
 
 
     // Constructors
 
         //- Construct from components
-        interface
+        UniformVoidFraction
         (
             const dictionary& dict,
             cfdemCloud& sm
@@ -112,11 +97,13 @@ public:
 
     // Destructor
 
-        ~interface();
+        ~UniformVoidFraction();
 
 
     // Member Functions
-        void setForce() const;
+        void setvoidFraction(double** const& ,double**&, double**&, double**&, double**&) const;
+
+        virtual double particleRadius(label) const;
 };
 
 

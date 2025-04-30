@@ -28,26 +28,20 @@ Description
     This code is designed to realize coupled CFD-DEM simulations using LIGGGHTS
     and OpenFOAM(R). Note: this code is not part of OpenFOAM(R) (see DISCLAIMER).
 
-Reference
-    G. Wierink, C. Goniva, B. Niceno, K. Heiskanen,
-    "Mechanistic Modelling of Particle-Interface Interaction in Three-Phase Flows",
-    Proc. of the 8th Int. Conf. on CFD in Oil and Gas, Metallurgical and Process Industries,
-    Trondheim, 2011
-
 Class
-    interface
+    fuckVoidFraction
 
 SourceFiles
-    interface.C
+    fuckVoidFraction.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef interface_H
-#define interface_H
+#ifndef fuckVoidFraction_H
+#define fuckVoidFraction_H
 
-#include "forceModel.H"
+#include "mathExtra.H"
+#include "voidFractionModel.H"
 #include "interpolationCellPoint.H"
-// #include "vectorField.H"  // for per-cell vector storage
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -55,56 +49,56 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class interface Declaration
+                           Class noDrag Declaration
 \*---------------------------------------------------------------------------*/
 
-class interface
+class fuckVoidFraction
 :
-    public forceModel
+    public voidFractionModel
 {
+
 private:
-    dictionary propsDict_;
+        static const int numberOfMarkerPoints = 29;
 
-    word VOFvoidfractionFieldName_;
+        dictionary propsDict_;
 
-    const volScalarField& alpha_;    // ref to VOF voidfraction
+        const bool verbose_;
 
-    word gradAlphaName_;
+        const Switch procBoundaryCorrection_;
 
-    const volVectorField& gradAlpha_;    // ref to fvc::grad(VOF voidfraction)
+    const scalar alphaMin_;
+    const scalar maxParticleSize_;
+    const scalar radiusFraction_;
+    scalar averagingRadius_;
+        scalar scaleVol_;               // Volume scaling factor
+        scalar scaleRadius_;            // Radius scaling factor
+    
 
-    const scalar sigma_;
+    bool cfdemUseOnly_;
 
-    const scalar theta_;
+    
+        const bool interpolation_;
 
-    const scalar alphaThreshold_;
+        vector offsets[numberOfMarkerPoints];
 
-    const scalar  deltaAlphaIn_;
+       inline scalar Vp(scalar radius, scalar scaleVol) const
+        {
+            return constant::mathematical::fourPiByThree * radius * radius * radius * scaleVol;
+        }
+        inline double particleRadius(label index) const;
 
-    const scalar  deltaAlphaOut_;
-
-    scalar C_; // model constant
-
-    bool interpolation_; // use interpolated field values (does not work for fine grids???)
-
-    autoPtr<interpolation<scalar> > alphaInterpolator_;
-
-    autoPtr<interpolation<vector> > gradAlphaInterpolator_;
-
-        // New members for optimized per-cell interface computation
-    mutable vectorField cellInterfaceVec_;  // precomputed interface vector per cell
-    scalar Fatt0_;                          // base capillary force factor (no dp)
+        void buildSuperCell(const label centralCellID, const scalar radius, labelHashSet& superCell) const;
 
 public:
 
     //- Runtime type information
-    TypeName("interface");
+    TypeName("fuck");
 
 
     // Constructors
 
         //- Construct from components
-        interface
+        fuckVoidFraction
         (
             const dictionary& dict,
             cfdemCloud& sm
@@ -112,11 +106,11 @@ public:
 
     // Destructor
 
-        ~interface();
+        ~fuckVoidFraction();
 
 
     // Member Functions
-        void setForce() const;
+        void setvoidFraction(double** const& ,double**&, double**&, double**&, double**&);
 };
 
 
